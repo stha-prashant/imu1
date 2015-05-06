@@ -1,37 +1,12 @@
-#include <stdio.h>
-#include <math.h>
-// MPU-9150 Accelerometer + Gyro + Compass + Temperature
-// -----------------------------
-//
-// By arduino.cc user "frtrobotik" (Tobias Hübner)
-//
-//
-// July 2013
-//      first version
-//
-// Open Source / Public Domain
-//
-// Using Arduino 1.0.1
-// It will not work with an older version,
-// since Wire.endTransmission() uses a parameter
-// to hold or release the I2C bus.
-//
-// Documentation:
-// - The InvenSense documents:
 //   - "MPU-9150 Product Specification Revision 4.0",
 //     PS-MPU-9150A.pdf
 //   - "MPU-9150 Register Map and Descriptions Revision 4.0",
 //     RM-MPU-9150A-00.pdf
 //   - "MPU-9150 9-Axis Evaluation Board User Guide"
-//     AN-MPU-9150EVB-00.pdf
-//
-// The accuracy is 16-bits.
-//
-// Some parts are copied by the MPU-6050 Playground page.
-// playground.arduino.cc/Main/MPU-6050
-// There are more Registervalues. Here are only the most
-// nessecary ones to get started with this sensor.
+//     AN-MPU-9150EVB-00.pdf//
 
+#include <stdio.h>
+#include <math.h>
 #include <Wire.h>
 
 // Register names according to the datasheet.
@@ -265,23 +240,36 @@ void setup()
 
   // Clear the 'sleep' bit to start the sensor.
   MPU9150_writeSensor(MPU9150_PWR_MGMT_1, 0);
+
+  // The input clock for Gyroscope is 8[kHz]
+  // Set the Gyroscope clock divider to 0x08
   int temp0;
   temp0=  MPU9150_readSensor(0x1c);
   temp0 |= (0x10);
   temp0 &=~(0x08);
-
-  
   MPU9150_writeSensor(0x1c,temp0);
   
+
+
   MPU9150_writeSensor(0x19,0x0f);
+
+
   // disable mpu9150 i2c master mode
   //  I2C_MST_EN (0x6a[5]=0)
   MPU9150_writeSensor(0x6a,MPU9150_readSensor(0x6a) & (~(0x20)) ); 
+
   // enable i2c pass-through, mpu9150 i2c mastermode must be disabled, that is I2C_MST_EN (0x6a[5]=0)
   // I2C_BYPASS_EN (0x37[1]=1)
   MPU9150_writeSensor(0x37,MPU9150_readSensor(0x37) | 0x02);
+
+
+  // Run Compass specific configurations in a function call
+
   MPU9150_setupCompass();
 
+
+
+  // Begin TIVAWARE based System_Clock and  Timer Interrupt Configuration
   
   SysCtlPeripheralEnable( SYSCTL_PERIPH_TIMER0); // Enable Timer0
 
@@ -370,6 +358,8 @@ void Timer0_isr(void)
   Serial.print( MPU9150_readSensor( MPU9150_ACCEL_YOUT_L,MPU9150_ACCEL_YOUT_H) );
   Serial.print(" ");
   Serial.print( MPU9150_readSensor( MPU9150_ACCEL_ZOUT_L,MPU9150_ACCEL_ZOUT_H) ); */
+
+
   cx=MPU9150_readSensor(MPU9150_CMPS_XOUT_L,MPU9150_CMPS_XOUT_H)*ccf;
   cy=MPU9150_readSensor(MPU9150_CMPS_YOUT_L,MPU9150_CMPS_YOUT_H)*ccf;
   cz=MPU9150_readSensor(MPU9150_CMPS_ZOUT_L,MPU9150_CMPS_ZOUT_H)*ccf;
