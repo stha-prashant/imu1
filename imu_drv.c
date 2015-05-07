@@ -3,11 +3,7 @@
 //   - "MPU-9150 Register Map and Descriptions Revision 4.0",
 //     RM-MPU-9150A-00.pdf
 //   - "MPU-9150 9-Axis Evaluation Board User Guide"
-//     AN-MPU-9150EVB-00.pdf//
-
-#include <stdio.h>
-#include <math.h>
-#include <Wire.h>
+//     AN-MPU-9150EVB-00.pdf
 
 // Register names according to the datasheet.
 // According to the InvenSense document
@@ -139,10 +135,13 @@ int temp;
 
 #define PART_TM4C123GH6PM
 
-// Defines standard sized integers (independent of Architecture) like uint32_t and uint8_t;
+// include some  C Standard_Library header files
 #include <stdint.h>
-// Defines a BOOL datatype using TYPECAST of standard integer
 #include <stdbool.h>
+#include <stdio.h>
+#include <math.h>
+
+
 
 // I2C|TWI Arduino(Energia) Function Library
 #include <Wire.h>
@@ -154,7 +153,9 @@ int temp;
 #include <Energia.h>
 
 
-
+// *** 
+// Begin TIVAWARE includes
+// ****
 //	Defines hardware specific MACROS for TM4C123GH6PM (Tiva C 123)
 #include "inc/tm4c123gh6pm.h"
 //  TivaWare Driver Library GPIO handling
@@ -179,6 +180,14 @@ int temp;
 #include "driverlib/gpio.h"
 #include "driverlib/timer.h"
 
+
+// *** 
+// End TIVAWARE includes
+// ****
+
+
+
+
 // TM4C123GH6PM has a MAXIMUM SYSTEM CLOCK RATE of 80 [MHz] ( when running from the INTERNAL OSCILLATORS/PHASE-LOCKED LOOP
 
 // Define MACRO for the CLOCK_RATE in [Hz] 
@@ -189,12 +198,12 @@ int temp;
 #define BLUE 40
 #define GREEN 39
 
-// AMOUNT OF TIME BETWEEN STATE TRANSITIONS IS given by A/B = 1/4 = 0.25[s]
+// AMOUNT OF TIME BETWEEN STATE TRANSITIONS IS given by A/B = 1/20 = 0.05[s]
 // (A,B) are INTEGERS, such that A>0 & B>0
 #define A 1
 #define B 20
 
-// Define the BAUDRATE of UART0(Serial) to 9216000
+// Define the BAUDRATE of UART0(Serial) to 115200
 #define BAUDRATE 115200
 
 //  Declare a GLOBAL 8-bit STATE VARIABLE
